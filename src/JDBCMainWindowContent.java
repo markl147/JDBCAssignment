@@ -306,23 +306,11 @@ public class JDBCMainWindowContent extends JInternalFrame implements ActionListe
 		//I have only added functionality of 2 of the button on the lower right of the template
 		///////////////////////////////////////////////////////////////////////////////////
 
-		if(target == this.ListAllTeams){
-
-			cmd = "select distinct team from entrants;";
-
-			try{					
-				rs= stmt.executeQuery(cmd); 	
-				writeToFile(rs);
-			}
-			catch(Exception e1){e1.printStackTrace();}
-
-		}
-
 		if(target == this.NumMakes){
 			String manufacturers = this.NumMakesTF.getText();
 
-			cmd = "select make, count(*) "+  "from entrants " + "where make = '"  +manufacturers+"';";
-
+//			cmd = "select make, count(*) "+  "from entrants " + "where make = '"  +manufacturers+"';";
+			cmd = "SELECT fnNumOfManufacturers('" + manufacturers + "')";
 			System.out.println(cmd);
 			try{					
 				rs= stmt.executeQuery(cmd); 	
@@ -335,9 +323,21 @@ public class JDBCMainWindowContent extends JInternalFrame implements ActionListe
 		if(target == this.AverageWageForCountry){
 			String country = this.AverageWageForCountryTF.getText();
 
-			cmd = "select round(avg(wages), 2) "+  "from entrants " + "where country = '"  +country+"';";
+			//cmd = "select round(avg(wages), 2) "+  "from entrants " + "where country = '"  +country+"';";
+			cmd ="SELECT fnAvgCountryWage('" + country + "')";
 
 			System.out.println(cmd);
+			try{
+				rs= stmt.executeQuery(cmd);
+				writeToFile(rs);
+			}
+			catch(Exception e1){e1.printStackTrace();}
+
+		}
+		if(target == this.ListAllTeams){
+
+			cmd = "select distinct team from entrants;";
+
 			try{
 				rs= stmt.executeQuery(cmd);
 				writeToFile(rs);
