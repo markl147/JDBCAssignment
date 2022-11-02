@@ -31,7 +31,7 @@ public class JDBCMainWindowContent extends JInternalFrame implements ActionListe
 	private JLabel RiderNumberLabel=new JLabel("Number:      ");
 	private JLabel MakeLabel=new JLabel("Make:        ");
 	private JLabel ModelLabel=new JLabel("Model:                 ");
-	private JLabel YearLabel=new JLabel("Year:               ");
+	private JLabel PointsLabbel=new JLabel("Points:               ");
 	private JLabel TeamLabel=new JLabel("Team:      ");
 	private JLabel CountryLabel=new JLabel("Country:        ");
 	private JLabel WagesLabel=new JLabel("Wages:        ");
@@ -43,7 +43,7 @@ public class JDBCMainWindowContent extends JInternalFrame implements ActionListe
 	private JTextField RiderNumberTF=new JTextField(10);
 	private JTextField MakeTF=new JTextField(10);
 	private JTextField ModelTF=new JTextField(10);
-	private JTextField YearTF=new JTextField(10);
+	private JTextField PointsTF =new JTextField(10);
 	private JTextField TeamTF=new JTextField(10);
 	private JTextField CountryTF=new JTextField(10);
 	private JTextField WagesTF=new JTextField(10);
@@ -65,8 +65,8 @@ public class JDBCMainWindowContent extends JInternalFrame implements ActionListe
 	private JTextField NumMakesTF = new JTextField(12);
 	private JButton AverageWageForCountry = new JButton("Average Wage For Country");
 	private JTextField AverageWageForCountryTF = new JTextField(12);
-	private JButton ListAllTeams  = new JButton("List All Teams");
-	private JButton ListAllModels = new JButton("List All Models");
+	private JButton ListAllPoints = new JButton("List Point Standings");
+	private JButton TeamsPointsWages = new JButton("List Teams Wages and Points");
 
 
 
@@ -101,8 +101,8 @@ public class JDBCMainWindowContent extends JInternalFrame implements ActionListe
 		detailsPanel.add(MakeTF);
 		detailsPanel.add(ModelLabel);
 		detailsPanel.add(ModelTF);
-		detailsPanel.add(YearLabel);
-		detailsPanel.add(YearTF);
+		detailsPanel.add(PointsLabbel);
+		detailsPanel.add(PointsTF);
 		detailsPanel.add(TeamLabel);
 		detailsPanel.add(TeamTF);
 		detailsPanel.add(CountryLabel);
@@ -121,8 +121,8 @@ public class JDBCMainWindowContent extends JInternalFrame implements ActionListe
 		exportButtonPanel.add(NumMakesTF);
 		exportButtonPanel.add(AverageWageForCountry);
 		exportButtonPanel.add(AverageWageForCountryTF);
-		exportButtonPanel.add(ListAllTeams);
-		exportButtonPanel.add(ListAllModels);
+		exportButtonPanel.add(ListAllPoints);
+		exportButtonPanel.add(TeamsPointsWages);
 		exportButtonPanel.setSize(500, 200);
 		exportButtonPanel.setLocation(3, 300);
 		content.add(exportButtonPanel);
@@ -145,10 +145,10 @@ public class JDBCMainWindowContent extends JInternalFrame implements ActionListe
 		deleteButton.addActionListener(this);
 		clearButton.addActionListener(this);
 
-		this.ListAllTeams.addActionListener(this);
+		this.ListAllPoints.addActionListener(this);
 		this.NumMakes.addActionListener(this);
 		this.AverageWageForCountry.addActionListener(this);
-		this.ListAllModels.addActionListener(this);
+		this.TeamsPointsWages.addActionListener(this);
 
 		content.add(insertButton);
 		content.add(updateButton);
@@ -208,7 +208,7 @@ public class JDBCMainWindowContent extends JInternalFrame implements ActionListe
 			RiderNumberTF.setText("");
 			MakeTF.setText("");
 			ModelTF.setText("");
-			YearTF.setText("");
+			PointsTF.setText("");
 			TeamTF.setText("");
 			CountryTF.setText("");
 			WagesTF.setText("");
@@ -221,11 +221,11 @@ public class JDBCMainWindowContent extends JInternalFrame implements ActionListe
 			{
 //				String updateTemp ="INSERT INTO entrants VALUES("+
 //						null +",'"+FirstNameTF.getText()+"','"+LastNameTF.getText()+"','"+RiderNumberTF.getText()+"','"+MakeTF.getText()+"','"
-//						+ModelTF.getText()+"','"+YearTF.getText()+"','"+TeamTF.getText()+"','"+CountryTF.getText()+"','"+WagesTF.getText()+"','"+BonusTF.getText()+"');";
+//						+ModelTF.getText()+"','"+PointsTF.getText()+"','"+TeamTF.getText()+"','"+CountryTF.getText()+"','"+WagesTF.getText()+"','"+BonusTF.getText()+"');";
 
 				String updateTemp ="Call spInsertNew("+
 						null +",'"+FirstNameTF.getText()+"','"+LastNameTF.getText()+"','"+RiderNumberTF.getText()+"','"+MakeTF.getText()+"','"
-						+ModelTF.getText()+"','"+YearTF.getText()+"','"+TeamTF.getText()+"','"+CountryTF.getText()+"','"+WagesTF.getText()+"','"+BonusTF.getText()+"');";
+						+ModelTF.getText()+"','"+ PointsTF.getText()+"','"+TeamTF.getText()+"','"+CountryTF.getText()+"','"+WagesTF.getText()+"','"+BonusTF.getText()+"');";
 				stmt.executeUpdate(updateTemp);
 
 			}
@@ -267,7 +267,7 @@ public class JDBCMainWindowContent extends JInternalFrame implements ActionListe
 //							"', race_id = '" + RiderNumberTF.getText() +
 //							"', make = '" + MakeTF.getText() +
 //							"', model = '" + ModelTF.getText() +
-//							"', bike_year = '" + YearTF.getText() +
+//							"', num_points = '" + PointsTF.getText() +
 //							"', team = '" + TeamTF.getText() +
 //							"', country = '" + CountryTF.getText() +
 //							"', wages = '" + WagesTF.getText() +
@@ -280,7 +280,7 @@ public class JDBCMainWindowContent extends JInternalFrame implements ActionListe
 							+ "','" + RiderNumberTF.getText()
 							+ "','" + MakeTF.getText()
 							+ "','" + ModelTF.getText()
-							+ "','" + YearTF.getText()
+							+ "','" + PointsTF.getText()
 							+ "','" + TeamTF.getText()
 							+ "','" + CountryTF.getText()
 							+ "','" + WagesTF.getText()
@@ -298,6 +298,25 @@ public class JDBCMainWindowContent extends JInternalFrame implements ActionListe
 				System.err.println("Error with  update:\n"+sqle.toString());
 			}
 			finally{
+				TableModel.refreshFromDB(stmt);
+			}
+		}
+		if (target == exportButton)
+		{
+
+			cmd = "SELECT * from entrants;";
+			try
+			{
+				rs= stmt.executeQuery(cmd);
+				writeToFile(rs);
+
+			}
+			catch (SQLException sqle)
+			{
+				System.err.println("Error with export:\n"+sqle.toString());
+			}
+			finally
+			{
 				TableModel.refreshFromDB(stmt);
 			}
 		}
@@ -334,9 +353,9 @@ public class JDBCMainWindowContent extends JInternalFrame implements ActionListe
 			catch(Exception e1){e1.printStackTrace();}
 
 		}
-		if(target == this.ListAllTeams){
+		if(target == this.ListAllPoints){
 
-			cmd = "select distinct team from entrants;";
+			cmd = "SELECT * from vwPoints;";
 
 			try{
 				rs= stmt.executeQuery(cmd);
@@ -345,9 +364,10 @@ public class JDBCMainWindowContent extends JInternalFrame implements ActionListe
 			catch(Exception e1){e1.printStackTrace();}
 
 		}
-		if(target == this.ListAllModels){
+		if(target == this.TeamsPointsWages){
 
-			cmd = "select distinct model from entrants;";
+			//cmd = "select distinct model from entrants;";
+			cmd = "SELECT * from vwTeamsWages;";
 
 			try{
 				rs= stmt.executeQuery(cmd);
